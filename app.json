@@ -14,14 +14,15 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "ma.servizein.client"
+      "bundleIdentifier": "com.servizein.app",
+      "googleServicesFile": "./GoogleService-Info.plist"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "ma.servizein.client",
+      "package": "com.servizein.client",
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE",
@@ -36,6 +37,21 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
+      "@react-native-firebase/app",
+      "expo-apple-authentication",
+      [
+        "@react-native-google-signin/google-signin",
+        {
+          "iosUrlScheme": "com.googleusercontent.apps.1052339658783-3duecv7t2kiqsaloc7necd35bqlc54ti"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": { "minSdkVersion": 21 },
+          "ios": {}
+        }
+      ],
       [
         "expo-notifications",
         {
@@ -57,7 +73,7 @@
     },
     "extra": {
       "apiUrl": "http://172.20.10.5:3000/api/v1",
-      "apiUrlProd": "https://api.servizein.ma/api/v1",
+      "apiUrlProd": "https://servizein-api-production.up.railway.app/api/v1",
       "eas": {
         "projectId": "YOUR_EAS_PROJECT_ID"
       }
