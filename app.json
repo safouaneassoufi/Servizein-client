@@ -38,10 +38,10 @@
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "@react-native-firebase/app",
+      "./node_modules/@react-native-firebase/app/app.plugin.js",
       "expo-apple-authentication",
       [
-        "@react-native-google-signin/google-signin",
+        "./node_modules/@react-native-google-signin/google-signin/app.plugin.js",
         {
           "iosUrlScheme": "com.googleusercontent.apps.1052339658783-3duecv7t2kiqsaloc7necd35bqlc54ti"
         }
