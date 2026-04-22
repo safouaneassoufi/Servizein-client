@@ -44,6 +44,5 @@ yarn-error.*
 *.log
 .tmp/
 
-# Google services (contains sensitive keys)
+# Google services (android only — keep iOS plist tracked for EAS build)
 google-services.json
-GoogleService-Info.plist
