@@ -56,7 +56,8 @@
             "minSdkVersion": 21
           },
           "ios": {
-            "deploymentTarget": "13.4"
+            "deploymentTarget": "13.4",
+            "useFrameworks": "static"
           }
         }
       ],
