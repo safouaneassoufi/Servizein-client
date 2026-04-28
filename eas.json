@@ -3,8 +3,7 @@
   "build": {
     "production": {
       "ios": {
-        "autoIncrement": true,
-        "image": "latest"
+        "autoIncrement": true
       }
     }
   },

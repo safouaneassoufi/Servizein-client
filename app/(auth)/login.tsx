@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity,
   KeyboardAvoidingView, Platform, ActivityIndicator, Alert,
@@ -11,6 +11,10 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { authApi } from '../../src/api/auth.api';
 import { usersApi } from '../../src/api/users.api';
 import { useAuthStore } from '../../src/store/auth.store';
+import { useAuth } from '../../src/hooks/useAuth';
+import { GoogleIcon } from '../../src/components/ui/GoogleIcon';
+import { AppleIcon } from '../../src/components/ui/AppleIcon';
+import { isAppleSignInAvailable } from '../../src/services/appleAuth.service';
 
 const schema = z.object({
   identifier: z.string().min(1, 'Champ requis'),
@@ -18,15 +22,52 @@ const schema = z.object({
 });
 type FormData = z.infer<typeof schema>;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const LOGIN_EMAIL_ROUTE: any = '/(auth)/login-email';
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const PHONE_LOGIN_ROUTE: any = '/(auth)/phone-login';
+
 export default function LoginScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
   const { setTokens, setUser } = useAuthStore();
+  const { loginWithGoogle, loginWithApple } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
+  const [appleLoading, setAppleLoading] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState(false);
+
+  useEffect(() => {
+    isAppleSignInAvailable().then(setAppleAvailable);
+  }, []);
 
   const { control, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  const handleAppleLogin = async () => {
+    setAppleLoading(true);
+    try {
+      await loginWithApple();
+      router.replace('/(app)/(home)');
+    } catch (error: any) {
+      Alert.alert('Erreur Apple', error.message ?? 'Connexion Apple impossible');
+    } finally {
+      setAppleLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setGoogleLoading(true);
+    try {
+      await loginWithGoogle();
+      router.replace('/(app)/(home)');
+    } catch (error: any) {
+      Alert.alert('Erreur Google', error.message ?? 'Connexion Google impossible');
+    } finally {
+      setGoogleLoading(false);
+    }
+  };
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
@@ -117,6 +158,67 @@ export default function LoginScreen() {
           onPress={() => router.push('/(auth)/reset-password')}
         >
           <Text className="text-primary text-sm">Mot de passe oublié ?</Text>
+        </TouchableOpacity>
+
+        {/* ─── Séparateur ─── */}
+        <View className="flex-row items-center mt-6 gap-3">
+          <View className="flex-1 h-px bg-gray-200" />
+          <Text className="text-gray-400 text-xs">ou continuer avec</Text>
+          <View className="flex-1 h-px bg-gray-200" />
+        </View>
+
+        {/* ─── Bouton Google ─── */}
+        <TouchableOpacity
+          className="mt-4 h-12 rounded-xl border border-gray-200 flex-row items-center justify-center gap-3 bg-white"
+          onPress={handleGoogleLogin}
+          disabled={googleLoading}
+          activeOpacity={0.7}
+        >
+          {googleLoading ? (
+            <ActivityIndicator color="#374151" size="small" />
+          ) : (
+            <>
+              <GoogleIcon size={20} />
+              <Text className="text-gray-700 font-semibold text-sm">Continuer avec Google</Text>
+            </>
+          )}
+        </TouchableOpacity>
+
+        {/* ─── Bouton Apple (iOS uniquement) ─── */}
+        {appleAvailable && (
+          <TouchableOpacity
+            className="mt-3 h-12 rounded-xl flex-row items-center justify-center gap-3 bg-black"
+            onPress={handleAppleLogin}
+            disabled={appleLoading}
+            activeOpacity={0.85}
+          >
+            {appleLoading ? (
+              <ActivityIndicator color="#ffffff" size="small" />
+            ) : (
+              <>
+                <AppleIcon size={18} color="#ffffff" />
+                <Text className="text-white font-semibold text-sm">Continuer avec Apple</Text>
+              </>
+            )}
+          </TouchableOpacity>
+        )}
+
+        {/* ─── Bouton SMS ─── */}
+        <TouchableOpacity
+          className="mt-3 h-12 rounded-xl border border-gray-200 flex-row items-center justify-center gap-3 bg-white"
+          onPress={() => router.push(PHONE_LOGIN_ROUTE)}
+          activeOpacity={0.7}
+        >
+          <Text className="text-gray-700 font-semibold text-sm">Connexion par SMS</Text>
+        </TouchableOpacity>
+
+        {/* ─── Bouton Email ─── */}
+        <TouchableOpacity
+          className="mt-2 h-12 rounded-xl border border-gray-200 flex-row items-center justify-center gap-3 bg-white"
+          onPress={() => router.push(LOGIN_EMAIL_ROUTE)}
+          activeOpacity={0.7}
+        >
+          <Text className="text-gray-700 font-semibold text-sm">Connexion par email</Text>
         </TouchableOpacity>
 
         <View className="flex-row justify-center mt-8">

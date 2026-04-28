@@ -26,4 +26,17 @@ export const authApi = {
 
   resetPassword: (phone: string, code: string, newPassword: string) =>
     apiClient.post<any, AuthTokens>('/auth/reset-password', { phone, code, newPassword }),
+
+  firebaseLogin: (idToken: string) =>
+    apiClient.post<any, AuthTokens>('/auth/firebase', { idToken }),
+
+  googleLogin: (idToken: string) =>
+    apiClient.post<any, AuthTokens>('/auth/google', { idToken }),
+
+  appleLogin: (data: {
+    identityToken: string;
+    authorizationCode: string;
+    email: string | null;
+    fullName: string | null;
+  }) => apiClient.post<any, AuthTokens>('/auth/apple', data),
 };

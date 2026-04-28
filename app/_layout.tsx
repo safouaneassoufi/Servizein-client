@@ -4,16 +4,20 @@ import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { configureGoogleSignIn } from '../src/services/googleAuth.service';
 import '../global.css';
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: 1,
-      staleTime: 1000 * 60 * 2, // 2 minutes
+      staleTime: 1000 * 60 * 2,
     },
   },
 });
+
+// Configure Google Sign-In once at app startup
+configureGoogleSignIn();
 
 export default function RootLayout() {
   return (
