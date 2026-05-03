@@ -2,6 +2,12 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { storage } from '../utils/storage';
 import { API_BASE_URL, API_TIMEOUT } from '../constants/api';
 
+// Registered from app/_layout.tsx — called when 401 + refresh fails
+let _logoutCallback: (() => void) | null = null;
+export function setLogoutCallback(cb: () => void) {
+  _logoutCallback = cb;
+}
+
 // Axios client principal
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -47,7 +53,7 @@ apiClient.interceptors.response.use(
         return apiClient(original);
       } catch {
         await storage.clearTokens();
-        // L'auth store écoutera le clearTokens via rehydration
+        _logoutCallback?.();
         return Promise.reject(error);
       }
     }

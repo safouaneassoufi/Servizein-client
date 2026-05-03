@@ -1,10 +1,12 @@
 import { useEffect } from 'react';
-import { Stack } from 'expo-router';
+import { Stack, router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { configureGoogleSignIn } from '../src/services/googleAuth.service';
+import { setLogoutCallback } from '../src/api/client';
+import { useAuthStore } from '../src/store/auth.store';
 import '../global.css';
 
 const queryClient = new QueryClient({
@@ -20,6 +22,14 @@ const queryClient = new QueryClient({
 configureGoogleSignIn();
 
 export default function RootLayout() {
+  useEffect(() => {
+    setLogoutCallback(() => {
+      useAuthStore.getState().logout().then(() => {
+        router.replace('/(auth)/welcome');
+      });
+    });
+  }, []);
+
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
