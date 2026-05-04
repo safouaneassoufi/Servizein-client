@@ -19,7 +19,7 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       },
-      "buildNumber": "5"
+      "buildNumber": "8"
     },
     "android": {
       "adaptiveIcon": {
@@ -57,7 +57,7 @@
             "minSdkVersion": 21
           },
           "ios": {
-            "deploymentTarget": "13.4",
+            "deploymentTarget": "15.1",
             "useFrameworks": "static"
           }
         }
