@@ -103,6 +103,13 @@ export default function OtpScreen() {
           ))}
         </View>
 
+        {/* Hint OTP fixe */}
+        <View style={{ backgroundColor: '#eff6ff', borderRadius: 12, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16 }}>
+          <Text style={{ color: '#1d4ed8', fontSize: 13, textAlign: 'center', fontWeight: '600' }}>
+            Code de vérification : 123456
+          </Text>
+        </View>
+
         <Button label="Valider" loading={loading} onPress={handleVerify} />
 
         <TouchableOpacity

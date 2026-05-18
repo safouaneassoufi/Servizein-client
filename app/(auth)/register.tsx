@@ -17,7 +17,7 @@ import { useAuth } from '../../src/hooks/useAuth';
 
 const schema = z.object({
   name: z.string().min(2, 'Nom trop court'),
-  phone: z.string().regex(/^\+212[0-9]{9}$/, 'Format : +212XXXXXXXXX'),
+  phone: z.string().regex(/^\+[1-9]\d{6,14}$/, 'Format E.164 : +212XXXXXXXXX ou +33XXXXXXXXX'),
   email: z.string().email('Email invalide').optional().or(z.literal('')),
   password: z.string().min(8, '8 caractères minimum'),
   confirmPassword: z.string(),
